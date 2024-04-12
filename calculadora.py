@@ -1,87 +1,92 @@
-from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton,QLineEdit 
-from PySide6.QtGui import QPixmap, QMovie,QFont
-from PySide6.QtCore import QTimer, Qt 
+from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLineEdit, QGridLayout,QSizePolicy,QSizeGrip
+from PySide6.QtCore import Qt
 
-class MainWindow(QWidget):
+
+class Calculator(QWidget):
     def __init__(self):
         super().__init__()
-        self.resultado=0
-        self.setWindowTitle("Calculadora simple")
-        self.setGeometry(300,300,400,200)
-        
-        
-        #NUMERO 1
-        titulo1=QLabel("Número 1:",self)
-        titulo1.move(0,0)
-        input=QLineEdit(self)
-        input.setPlaceholderText("Ingrese numero 1")
-        input.resize (120,input.size().height())
-        input.move(0,
-                   20)
-        
-        #NUMERO 2
-        titulo2=QLabel("Numero 2:",self)
-        titulo2.move(0,55)
-        input2=QLineEdit(self)
-        input2.setPlaceholderText("Ingrese numero 2")
-        input2.resize (120,input.size().height())
-        input2.move(0,
-                   70)
-        
-        
-        #OPERADOR
-        operator=QLineEdit(self)
-        operator.resize(120,input.size().height())
-        operator.move(0,
-                     125)
-        label=QLabel("Operacion:",self)
-        label.move(0,110)
-        
-        #CALCULAR   
-        button = QPushButton ("Calcular", self)
-        button.resize(120,30)
-        button.move(0,155)
-        button.clicked.connect(lambda:self.calcular_operacion(input,input2,operator,advice))
 
-        # RESULTADO 
-        advice= QLabel(f'RESULTADO', self)
-        advice.resize(250,50)
-        advice.move(200,0)
-        font=QFont("comic sans",16)
-        font.setBold(True)
-        advice.setFont(font)
-        
-        
-    def calcular_operacion(self,input,input2,operator,advice):
-        operator=operator.text()
-        num1= float(input.text())
-        num2=float(input2.text())
-        if operator == "+" or  operator=="suma" or  operator=='+ ':
-            self.resultado=num1+num2
-        elif  operator=="-" or operator=="resta" or operator=="- " or operator=="resta ":
-            self.resultado=num1-num2
-        elif operator== "*" or operator=="multi" or operator=="* " or operator=="multi ":
-            self.resultado=num1 * num2
-        elif operator=="/" or operator=="div" or operator=="divicion" or operator=="/ " or operator== "divicion ":
-            if num2==0:
-                print("No se puede dividir entre cero")
-            else:    
-                self.resultado=num1/num2
-        elif operator=="^" or operator=="potencia" or operator=="pot" or  operator=="**" or operator== "^ " or operator== "potencia " or operator=="pot ":
-            self.resultado=num1**num2
-        else:
-            print ("Error en el Operador")
-        
-        advice.setText(f'RESULTADO:\n{self.resultado}')
+        self.setWindowTitle("Calculator")
 
-            
+        self.layout = QGridLayout()
+
         
+        self.result = QLineEdit(self)
+        self.result.setAlignment(Qt.AlignRight)
+        self.result.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) # Set the size policy to expanding
+        self.result.setMinimumSize(50, 50)
+        self.result.setReadOnly(True)
+
+        self.layout.addWidget(self.result, 0, 0, 1, 5)
+
+        self.buttons1 = {}
+        operations1 = ["C", "(", ")", "mod", "pi"]
+        for i, operation in enumerate(operations1):
+            button = QPushButton(operation)
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) 
+            button.setMinimumSize(50, 50)
+            self.buttons1[operation] = button
+            self.layout.addWidget(button, 1, i)
+            button.clicked.connect(self.on_button_clicked(operation))
         
+        self.buttons2={}
+        operations2= ["7","8","9","+","/"]
+        for i, operation in enumerate (operations2):
+            button = QPushButton(operation)
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) 
+            button.setMinimumSize(50, 50)
+            self.buttons2[operation] = button
+            self.layout.addWidget(button,2,i)
+            button.clicked.connect(self.on_button_clicked(operation))
         
+        self.buttons3={}
+        operations3= ["4","5","6","*","**"]
+        for i, operation in enumerate (operations3):
+            button = QPushButton(operation)
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) 
+            button.setMinimumSize(50, 50)
+            self.buttons3[operation] = button
+            self.layout.addWidget(button,3,i)
+            button.clicked.connect(self.on_button_clicked(operation))
+        
+        self.buttons4={}
+        operations2= ["1","2","3","-"]
+        for i, operation in enumerate (operations2):
+            button = QPushButton(operation)
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) 
+            button.setMinimumSize(50, 50)
+            self.buttons4[operation] = button
+            self.layout.addWidget(button,4,i)
+            button.clicked.connect(self.on_button_clicked(operation))
+        
+        self.buttons5={}
+        operations2= ["0",",","%","+"]
+        for i, operation in enumerate (operations2):
+            button = QPushButton(operation)
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            button.setMinimumSize(50, 50)
+            self.buttons5[operation] = button
+            self.layout.addWidget(button,5,i)
+            button.clicked.connect(self.on_button_clicked)
+
+        self.boton_igual=QPushButton("=")
+        self.boton_igual.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) 
+        self.boton_igual.setMinimumSize(50, 50)
+        self.layout.addWidget(self.boton_igual,4,4,2,1)
+        self.boton_igual.clicked.connect(self.on_button_clicked)
+
+        self.setLayout(self.layout)
+
+    def on_button_clicked (self,text):
+            self.result.clear()
+            self.result.setText(self.result.text() + text)
+
     
+
+        
+        
 if __name__ == "__main__":
     app = QApplication([])
-    window = MainWindow()
+    window = Calculator()
     window.show()
     app.exec()
-    
